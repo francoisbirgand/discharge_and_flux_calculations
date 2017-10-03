@@ -13,7 +13,7 @@
 ### the With high frequency sensors
 ### we obtain 
 
-setwd("~/jupyternotebook")
+setwd("~/gitRepositories/discharge_and_flux_calculations/")
 TS1<-read.csv("Q_TS.csv",header = FALSE)
 names(TS1)<-c("date","Q")
 TS1
@@ -131,9 +131,16 @@ tail(cumQ2h)
 dim(QQQ)= c(24*6,4380*12/24/6)
 nrow(QQQ)
 
+data$date=as.POSIXlt(data$date, format = "%Y-%m-%d %H:%M:%S")
+hydgph<-data[which(data$date >= as.POSIXlt("1999-01-03 00:00:00") & 
+                     data$date <= as.POSIXlt("1999-01-08 00:00:00")),]
+write.csv(hydgph,"hydgph.csv",row.names = FALSE)
 
-plot_ly(data) %>%
-  add_lines(x = ~date,y=~Q)
+hydgph<-read.csv(file = "https://raw.githubusercontent.com/francoisbirgand/discharge_and_flux_calculations/master/hydgph.csv", 
+                   header = TRUE)
+names(hydgph)=c("date","Q","NO3")
+hydgph$date=as.POSIXct(hydgph$date, format = "%Y-%m-%d %H:%M:%S")
+plot(hydgph$date,hydgph$Q*1000,xlab = "date",ylab = "Flow rate (L/s)",type = "o",col="blue")
 
 
 
