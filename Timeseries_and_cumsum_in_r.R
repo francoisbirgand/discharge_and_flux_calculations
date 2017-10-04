@@ -137,13 +137,55 @@ hydgph<-data[which(data$date >= as.POSIXlt("1999-01-03 00:00:00") &
 write.csv(hydgph,"hydgph.csv",row.names = FALSE)
 
 hydgph<-read.csv(file = "https://raw.githubusercontent.com/francoisbirgand/discharge_and_flux_calculations/master/hydgph.csv", 
-                   header = TRUE)
+                 header = TRUE)
 names(hydgph)=c("date","Q","NO3")
-hydgph$date=as.POSIXct(hydgph$date, format = "%Y-%m-%d %H:%M:%S")
-plot(hydgph$date,hydgph$Q*1000,xlab = "date",ylab = "Flow rate (L/s)",type = "o",col="blue")
+date=as.POSIXct(hydgph$date, format = "%Y-%m-%d %H:%M:%S");Q=hydgph$Q*1000
+par(mar=c(4.5,4.5,0.5,0.5))
+plot(date,Q,xlab = "date",ylab = "Flow rate (L/s)",type = "o",col="blue")
+
+cumQ<-matrix(0,length(Q),1)
+for (i in 1:(length(Q)-1)){QQ=(Q[i]+Q[i+1])/2*timeres;cumQ[i+1]=cumQ[i]+QQ}
+hydgph_1h <- hydgph[-1,]
+Q_1h<-hydgph_1h$Q*1000
+date_1h<-hydgph_1h$date[as.POSIXlt(hydgph_1h$date)$min==0]
+dim(Q_1h)<-c(6,120)
+Q_1h<-apply(Q_1h,2,mean)
+hydgph_1h<-cbind(as.character(date_1h),Q_1h)
+cumQ1h<-cumsum(Q_1h)*3600
+tail(cumQ1h)
+Qrise=Q[date<=as.POSIXlt("1999-01-03 15:00:00")]
+Qrise_1h=Q_1h[as.POSIXlt(date_1h)<=as.POSIXlt("1999-01-03 15:00:00")]
+
+hydgph_1h=as.data.frame(hydgph_1h)
+names(hydgph_1h)=c("date1h","Q1h")
+date1h=hydgph_1h$date1h;Q1h=as.numeric(as.character(hydgph_1h$Q1h))
+cumQ1h<-matrix(0,length(Q1h),1)
+for (i in 1:(length(Q1h)-1)){QQ=(Q1h[i]+Q1h[i+1])/2*3600;cumQ1h[i+1]=cumQ1h[i]+QQ}
+paste("cumflow during the rising limb /apparent instantaneous flow rates = ",
+      signif(tail(cumQ1h,1)/1000,6)," m³",sep="")
+paste("cumflow during the rising limb /hourly mean flow rates = ",
+      signif(tail(cumsum(Q1h[-1])*3600,1)/1000,6)," m³",sep="")
+par(mar=c(4.5,4.5,0.5,0.5))
+plot(date,Q,xlab = "date",ylab = "Flow rate (L/s)",type = "o",col="blue",xlim=xlimHG,ylim=ylimHG)
+par(new=TRUE)
+plot(as.POSIXct(date1h),Q1h,col="red",xlim=xlimHG,ylim=ylimHG,xaxt="n",yaxt="n",xlab="",ylab="")
+legend("topright", c("10-min instantaneous Q","hourly mean Q"),col=c("blue","red"),type=c("o","p"))
+
+temppath<-"~/Google Drive/Echantillonnage/Methods/Data/CLUP/TSS/13-14/"
+dataCLUP=read.csv(file = paste(temppath,"Lin_15min_CLUP_TSS_13-14syn.csv",sep=""),header=FALSE)
 
 
 
+Q1h<-apply()
+
+hydgph<-as.data.frame(hydgph)
+library(plotly)
+plot_ly(hydgph) %>%
+  add_lines(x = ~date, y=~Q)
+
+
+cumQ<-matrix(0,length(Q),1)
+for (i in 1:(length(Q)-1)){QQ=(Q[i]+Q[i+1])/2*timeres;cumQ[i+1]=cumQ[i]+QQ}
 
 
 
