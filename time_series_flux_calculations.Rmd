@@ -2,7 +2,7 @@
 title: "Stream discharge - instantaneous or mean flow rates - Should we care?"
 author: François Birgand, Associate Professor
 date: 4 October 2017
-output: word_document
+output: github_document
 number_sections: true
 ---
 
