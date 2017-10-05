@@ -88,8 +88,10 @@ CumQh
 
 library(knitr)
 date<-as.POSIXlt(date)
-resable<-cbind(as.character(dateh),cumQ[date$min==0],cumQh,paste(signif((cumQh-cumQ[date$min==0])/cumQh*100,3),"%",sep=" "))
-kable(resable)
+restable<-cbind(as.character(dateh),cumQ[date$min==0],cumQh,paste(signif((cumQh-cumQ[date$min==0])/cumQh*100,3),"%",sep=" "))
+restable<-as.data.frame(restable)
+names(restable)<-c("time stamp","using Instantaneous Q","using mean Q","% difference")
+kable(restable, align = c('l','r','r','r'))
 
 
 date<-as.POSIXct(date)
