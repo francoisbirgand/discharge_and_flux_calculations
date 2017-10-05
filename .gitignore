@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 discharge_and_flux_calculations.Rproj
+Timeseries_and_cumsum_in_r.R
+Q_TS.csv
+QC_TS.csv
